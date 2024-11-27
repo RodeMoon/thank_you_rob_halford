@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_integrador_bomberos/screens/dashboard_screen.dart';
 import 'package:proyecto_integrador_bomberos/screens/login_screen.dart';
+import 'package:proyecto_integrador_bomberos/utils/theme.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'App Bomberos',
       home: const LoginScreen(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: const MaterialTheme(TextTheme()).light(),
       routes: {
         "/login": (context) => const LoginScreen(),
         "/home": (context) => const DashboardScreen(),

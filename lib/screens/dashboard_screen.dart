@@ -21,6 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final defaultColorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: defaultColorScheme.primaryContainer,
       key: _scaffoldKey,
       // Asigna la clave al Scaffold
       appBar: AppBar(
