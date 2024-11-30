@@ -21,11 +21,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final defaultColorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: defaultColorScheme.primaryContainer,
+      backgroundColor: defaultColorScheme.surfaceDim,
       key: _scaffoldKey,
       // Asigna la clave al Scaffold
       appBar: AppBar(
-        backgroundColor: defaultColorScheme.primary,
+        backgroundColor: defaultColorScheme.secondary,
         leading: IconButton(
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer(); // Abre el drawer
@@ -36,10 +36,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         title: Text(
-          "APP Bomberos",
-          style: TextStyle(color: defaultColorScheme.onPrimary),
+          "Reportes de incendios",
+          style: TextStyle(
+              fontFamily: 'NexaDemo',
+              fontWeight: FontWeight.bold,
+              color: defaultColorScheme.onPrimary),
         ),
-        actions: [
+        actions: const [
           /*GestureDetector(
             onTap: () {},
             child: MouseRegion(
@@ -114,6 +117,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
             leading: const Icon(Icons.room_preferences),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
           ),
+          ListTile(
+            onTap: () {
+              //Navigator.pushNamed(context, "/settings_drawer");
+            },
+            title: const Text("Acerca de"),
+            subtitle: const Text("Versión 1.0"),
+            leading: const Icon(Icons.info),
+            trailing: const Icon(Icons.arrow_forward_ios_sharp),
+          ),
           const Padding(
               padding: EdgeInsets.all(8),
               child: Divider(
@@ -128,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                   ModalRoute.withName("/login"));
             },
-            title: const Text("Cerrar Sesión"),
+            title: const Text("Cerrar sesión"),
             //subtitle: const Text("Tema / Fuente"),
             leading: const Icon(Icons.logout),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),

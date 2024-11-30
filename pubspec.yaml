@@ -62,6 +62,19 @@ flutter:
   assets:
      - assets/
   #   - images/a_dot_ham.jpeg
+  fonts:
+    - family: NexaDemo
+      fonts:
+        - asset: assets/fonts/NexaDemo-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/NexaDemo-Light.ttf
+          weight: 300
+    - family: NexaTextDemo
+      fonts:
+        - asset: assets/fonts/NexaTextDemo-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/NexaTextDemo-Light.ttf
+          weight: 300
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
