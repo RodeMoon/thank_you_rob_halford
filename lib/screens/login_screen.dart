@@ -79,15 +79,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 75),
                   MyButton(onTap: signInUser),
                   const SizedBox(height: 50),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('¿No está registrado?'),
                       SizedBox(width: 4),
-                      Text(
-                        'Regístrese ahora',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                      GestureDetector.new(
+                        onTap: () => Navigator.pushNamed(context, "/register"),
+                        child: const Text(
+                          'Regístrese ahora',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

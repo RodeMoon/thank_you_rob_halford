@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:proyecto_integrador_bomberos/screens/dashboard_screen.dart';
+import 'package:proyecto_integrador_bomberos/screens/register_screen.dart';
 import 'package:proyecto_integrador_bomberos/screens/login_screen.dart';
 import 'package:proyecto_integrador_bomberos/utils/theme.dart';
 
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,7 +28,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/login": (context) => const LoginScreen(),
         "/home": (context) => const DashboardScreen(),
-
+        "/register": (context) => const RegisterScreen(),
       },
       debugShowCheckedModeBanner: false,
     );
