@@ -45,10 +45,12 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
       TextEditingController();
 
   // Controladores para Reporte de Actividades
-  final TextEditingController folioController = TextEditingController();
+  final TextEditingController folioAnoController = TextEditingController();
+  final TextEditingController folioC4Controller = TextEditingController();
   final TextEditingController elaboraController = TextEditingController();
 
   // Controladores para Información Complementaria
+  final TextEditingController accionesController = TextEditingController();
   final TextEditingController nombreAfectadoController =
       TextEditingController();
   final TextEditingController funcionController = TextEditingController();
@@ -58,36 +60,163 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
 
   // Controladores para Observaciones y Firma
   final TextEditingController observacionesController = TextEditingController();
-  final TextEditingController firmaController = TextEditingController();
 
   // Opciones para Dropdowns
+  final List<String> guardiaOptions = [
+    "Guardia \"A\"",
+    "Guardia \"B\"",
+    "Guardia \"C\"",
+  ];
+
   final List<String> solicitadoPorOptions = [
     "C-4",
     "Protección Civil",
     "Base Alfa",
-    "Ciudadano"
+    "Ciudadano",
+    "Anónimo"
   ];
+
   final List<String> medioOptions = ["Radio", "Teléfono", "Pié Tierra"];
+
   final List<String> tipoLlamadaOptions = [
     "Emergencia",
     "Administrativo",
     "Evento Especial"
   ];
+
+  final List<String> operadorOptions = [
+    "Miguel Mejia",
+    "Alfonso Peru",
+    "Abraham Ariza",
+    "Alejandro Mejia",
+    "Rene Enriquez",
+    "José Mejía",
+    "Gabriel Trejo",
+    "Manuel Peres",
+    "Jazael Ruvalcaba",
+    "Otro"
+  ];
+
   final List<String> tipoServicioOptions = [
     "Contraincendio",
     "Rescate",
     "Fugas/Derrames",
     "Administrativo",
     "Especial",
+    "Cables caídos/Corto circuito",
+    "Falsa alarma/Cancelado",
+    "Otro"
+  ];
+
+  final List<String> ciudadOptions = [
+    "Abasolo",
+    "Acámbaro",
+    "Apaseo el Alto",
+    "Apaseo el Grande",
+    "Atarjea",
+    "Celaya",
+    "Comonfort",
+    "Coroneo",
+    "Cortazar",
+    "Cuerámaro",
+    "Doctor Mora",
+    "Dolores Hidalgo",
+    "Guanajuato",
+    "Huanímaro",
+    "Irapuato",
+    "Jaral del Progreso",
+    "Jerécuaro",
+    "León",
+    "Manuel Doblado",
+    "Moroleón",
+    "Ocampo",
+    "Pénjamo",
+    "Pueblo Nuevo",
+    "Purísima del Rincón",
+    "Romita",
+    "Salamanca",
+    "Salvatierra",
+    "San Diego de la Unión",
+    "San Felipe",
+    "San Francisco del Rincón",
+    "San José Iturbide",
+    "San Luis de la Paz",
+    "Santa Catarina",
+    "Santa Cruz de Juventino Rosas",
+    "Santiago Maravatío",
+    "Silao de la Victoria",
+    "Tarandacuao",
+    "Tarimoro",
+    "Tierra Blanca",
+    "Uriangato",
+    "Valle de Santiago",
+    "Victoria",
+    "Villagrán",
+    "Xichú",
+    "Yuriria"
+  ];
+
+  final List<String> unidadOptions = [
+    "M-1",
+    "M-2",
+    "M-7",
+    "M-8",
+    "M-10",
+    "M-12",
+    "M-14",
+    "M-15",
+    "M-16"
+  ];
+
+  final List<String> jefeServicioOptions = [
+    "Miguel Mejía",
+    "Alfonso Perú",
+    "Abraham Ariza",
+    "Alejandro Mejía",
+    "Rene Enriquez",
+    "José Mejía",
+    "Gabriel Trejo",
+    "Manuel Peres",
+    "Jazael Ruvalcaba",
+    "Miguel Lopez",
+    "Aaron Gonzales",
+    "Javier Conejo",
+    "Manuel Conejo",
+    "N/A",
     "Otro"
   ];
 
   String? solicitadoPor;
+  String? jefeServicio;
+  String? unidad;
+  String? ciudad;
   String? medio;
   String? tipoLlamada;
   String? tipoServicio;
+  String? guardia;
+  String? operador;
   bool falsaAlarma = false;
   bool cancelado = false;
+
+Future<void> selectedTime(BuildContext context, TextEditingController controller) async {
+  final TimeOfDay? newTime = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+    initialEntryMode: TimePickerEntryMode.input,
+    builder: (BuildContext context, Widget? child) {
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      );
+    },
+  );
+
+  if (newTime != null) {
+    final formattedTime = '${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}';
+    controller.text = formattedTime;
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +274,18 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: TextFormField(
-                      controller: ciudadController,
+                    child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "Ciudad"),
+                      items: ciudadOptions
+                          .map((option) => DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              ))
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => ciudad = value as String?),
                       validator: (value) =>
-                          value!.isEmpty ? "Campo requerido" : null,
+                          value == null ? "Campo requerido" : null,
                     ),
                   ),
                 ],
@@ -226,6 +362,18 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               Text("Datos del Reporte",
                   style: Theme.of(context).textTheme.titleLarge),
               DropdownButtonFormField(
+                decoration: InputDecoration(labelText: "Guardia"),
+                items: guardiaOptions
+                    .map((option) => DropdownMenuItem(
+                          value: option,
+                          child: Text(option),
+                        ))
+                    .toList(),
+                onChanged: (value) =>
+                    setState(() => guardia = value as String?),
+                validator: (value) => value == null ? "Campo requirido" : null,
+              ),
+              DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Solicitado por"),
                 items: solicitadoPorOptions
                     .map((option) => DropdownMenuItem(
@@ -270,10 +418,16 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               // SECCIÓN: Datos de Unidad y Horarios
               Text("Datos de Unidad y Horarios",
                   style: Theme.of(context).textTheme.titleLarge),
-              TextFormField(
-                controller: unidadAtiendeController,
-                decoration: InputDecoration(labelText: "Unidad que Atiende"),
-                validator: (value) => value!.isEmpty ? "Campo requerido" : null,
+              DropdownButtonFormField(
+                decoration: InputDecoration(labelText: "Unidad que atiende"),
+                items: unidadOptions
+                    .map((option) => DropdownMenuItem(
+                          value: option,
+                          child: Text(option),
+                        ))
+                    .toList(),
+                onChanged: (value) => setState(() => unidad = value as String?),
+                validator: (value) => value == null ? "Campo requerido" : null,
               ),
               Row(
                 children: [
@@ -302,37 +456,38 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               ),
               TextFormField(
                 controller: hrReporteController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                readOnly: true,
+                onTap: () => selectedTime(context, hrReporteController),
                 decoration: InputDecoration(labelText: "Hr Reporte"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrSalidaBaseController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onTap: () => selectedTime(context, hrSalidaBaseController),
                 decoration: InputDecoration(labelText: "Hr Salida de Base"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrArriboController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onTap: () => selectedTime(context, hrArriboController),
                 decoration: InputDecoration(labelText: "Hr Arribo a Escena"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrSalidaEscenaController,
+                onTap: () => selectedTime(context, hrSalidaEscenaController),
                 decoration: InputDecoration(labelText: "Hr Salida de Escena"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrUnidadDisponibleController,
+                onTap: () => selectedTime(context, hrUnidadDisponibleController),
                 decoration: InputDecoration(labelText: "Hr Unidad Disponible"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrLlegadaBaseController,
+                onTap: () => selectedTime(context, hrLlegadaBaseController),
                 decoration: InputDecoration(labelText: "Hr Llegada a Base"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
@@ -399,8 +554,18 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               Text("Reporte de Actividades",
                   style: Theme.of(context).textTheme.titleLarge),
               TextFormField(
-                controller: folioController,
-                decoration: InputDecoration(labelText: "Folio"),
+                controller: folioAnoController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(labelText: "Folio del año"),
+                validator: (value) => value!.isEmpty ? "Campo requerido" : null,
+              ),
+              TextFormField(
+                controller: folioC4Controller,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                    labelText: "Folio de C4 o NP (NP si no proporcionó Folio)"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
@@ -413,6 +578,10 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               // SECCIÓN: Información Complementaria
               Text("Información Complementaria",
                   style: Theme.of(context).textTheme.titleLarge),
+              TextFormField(
+                controller: accionesController,
+                decoration: InputDecoration(labelText: "Acciones en el Servicio, Material Involucrado/ Área afectada."),
+              ),
               TextFormField(
                 controller: nombreAfectadoController,
                 decoration: InputDecoration(labelText: "Nombre del Afectado"),
@@ -427,6 +596,8 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               ),
               TextFormField(
                 controller: telefonoController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(labelText: "Teléfono"),
               ),
               TextFormField(
@@ -440,13 +611,39 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               // SECCIÓN: Personal en Servicio
               Text("Personal en Servicio",
                   style: Theme.of(context).textTheme.titleLarge),
-              TextFormField(
+              DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Operador"),
-                validator: (value) => value!.isEmpty ? "Campo requerido" : null,
+                items: operadorOptions
+                    .map((option) => DropdownMenuItem(
+                          value: option,
+                          child: Text(option),
+                        ))
+                    .toList(),
+                onChanged: (value) =>
+                    setState(() => operador = value as String?),
+                validator: (value) => value == null ? "Campo requerido" : null,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: "Jefe de Servicio"),
-                validator: (value) => value!.isEmpty ? "Campo requerido" : null,
+                controller: especificaController,
+                decoration: InputDecoration(
+                    labelText: "Especifique (en caso de 'Otro')"),
+              ),
+              DropdownButtonFormField(
+                decoration: InputDecoration(labelText: "Jefe de servicio"),
+                items: jefeServicioOptions
+                    .map((option) => DropdownMenuItem(
+                          value: option,
+                          child: Text(option),
+                        ))
+                    .toList(),
+                onChanged: (value) =>
+                    setState(() => jefeServicio = value as String?),
+                validator: (value) => value == null ? "Campo requerido" : null,
+              ),
+              TextFormField(
+                controller: especificaController,
+                decoration: InputDecoration(
+                    labelText: "Especifique (en caso de 'Otro')"),
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: "Asistente 1"),
@@ -467,12 +664,16 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Unidad"),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Encargado"),
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "No. de Elementos"),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 SizedBox(height: 10),
               ],
@@ -508,11 +709,6 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
                 decoration: InputDecoration(labelText: "Observaciones"),
                 maxLines: 3,
               ),
-              TextFormField(
-                controller: firmaController,
-                decoration:
-                    InputDecoration(labelText: "Firma de Jefe de Guardia"),
-              ),
               SizedBox(height: 20),
 
               // Botón Guardar Reporte
@@ -526,7 +722,7 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
                       Navigator.pop(context);
                     }
                   },
-                  child: Text("Guardar Reporte"),
+                  child: Text("Guardar reporte"),
                 ),
               ),
             ],
