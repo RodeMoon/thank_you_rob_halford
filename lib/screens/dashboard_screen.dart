@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_integrador_bomberos/screens/form_screen.dart';
 
 import 'login_screen.dart';
 
@@ -81,7 +82,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: defaultColorScheme.primary,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ReportFormScreen()),
+          );
+        },
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
@@ -122,7 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               //Navigator.pushNamed(context, "/settings_drawer");
             },
             title: const Text("Acerca de"),
-            subtitle: const Text("Versión 1.0"),
+            subtitle: const Text("Versión 1.1"),
             leading: const Icon(Icons.info),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
           ),

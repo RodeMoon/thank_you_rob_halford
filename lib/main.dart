@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:proyecto_integrador_bomberos/screens/dashboard_screen.dart';
 import 'package:proyecto_integrador_bomberos/screens/register_screen.dart';
 import 'package:proyecto_integrador_bomberos/screens/login_screen.dart';
+import 'package:proyecto_integrador_bomberos/screens/form_screen.dart';
 import 'package:proyecto_integrador_bomberos/utils/theme.dart';
 
 import 'firebase_options.dart';
@@ -14,7 +15,6 @@ void main() async {
   );
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         "/login": (context) => const LoginScreen(),
         "/home": (context) => const DashboardScreen(),
         "/register": (context) => const RegisterScreen(),
+        "/form": (context) => ReportFormScreen(),
       },
       debugShowCheckedModeBanner: false,
     );
