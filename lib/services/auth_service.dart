@@ -1,14 +1,18 @@
+import 'dart:convert';
+import 'package:proyecto_integrador_bomberos/services/database_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:proyecto_integrador_bomberos/screens/dashboard_screen.dart';
 import 'package:proyecto_integrador_bomberos/screens/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:crypto/crypto.dart';
 
 class AuthService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
-  ); // <----
+  );
+  final DatabaseService _dbService = DatabaseService(); // <----
   RegExp emailRegExp =
       RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
 
@@ -136,45 +140,71 @@ class AuthService {
       print("Error al agregar el usuario a Firestore: $e");
     }
   }*/
+
+  String toMd5(String email) {
+    print("email: ${md5.convert(utf8.encode(email)).toString()}");
+    return md5.convert(utf8.encode(email)).toString();
+  }
+
+  checkIfExist(String email, BuildContext context) async {
+    String emailMd5 = toMd5(email);
+    bool exists = await _dbService.checkIfUserExists(emailMd5);
+
+    if (!exists) {
+      await _googleSignIn.signOut();
+      Fluttertoast.showToast(
+        msg: "Error, no tiene autorización de acceso",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.SNACKBAR,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+        fontSize: 14.0,
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+      );
+    }
+  }
+
 //  LOGIN CON GOOGLE
   signInWithGoogle(BuildContext context) async {
-  try {
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    
-    if (gUser == null) {
-      print("Inicio de sesión cancelado");
-      return; // Si el usuario cancela, simplemente salimos de la función
+    try {
+      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+
+      if (gUser == null) {
+        print("Inicio de sesión cancelado");
+        return; // Si el usuario cancela, simplemente salimos de la función
+      }
+
+      final GoogleSignInAuthentication gAuth = await gUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: gAuth.accessToken,
+        idToken: gAuth.idToken,
+      );
+
+      progressBar(context, "Iniciando sesión...");
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      User user = userCredential.user!;
+
+      // Cerrar el Progress Bar
+      Navigator.of(context).pop();
+
+      print("Email del usuario: ${user.email}");
+      checkIfExist(user.email.toString(), context);
+    } catch (e) {
+      print("Error en Google Sign-In: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error al iniciar sesión con Google: $e")),
+      );
     }
-
-    final GoogleSignInAuthentication gAuth = await gUser.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
-
-    progressBar(context, "Iniciando sesión...");
-
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    User user = userCredential.user!;
-
-    // Cerrar el Progress Bar
-    Navigator.of(context).pop();
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const DashboardScreen()),
-    );
-  } catch (e) {
-    print("Error en Google Sign-In: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Error al iniciar sesión con Google: $e")),
-    );
   }
-}
 
-Future<void> signout({required BuildContext context}) async {
+  Future<void> signout({required BuildContext context}) async {
     progressBar(context, "Cerrando sesión");
     try {
       await FirebaseAuth.instance.signOut();
@@ -226,12 +256,14 @@ Future<void> signout({required BuildContext context}) async {
 
           // Cerrar el Progress Bar
           Navigator.of(context).pop();
-
+          print("email: $email");
+          checkIfExist(email, context);
+/*
           await Future.delayed(const Duration(seconds: 1));
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => const DashboardScreen()));
+                  builder: (BuildContext context) => const DashboardScreen()));*/
         } else {
           Fluttertoast.showToast(
             msg: "Ingrese una contraseña de al menos 6 carácteres.",
