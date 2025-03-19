@@ -198,25 +198,25 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
   bool falsaAlarma = false;
   bool cancelado = false;
 
-Future<void> selectedTime(BuildContext context, TextEditingController controller) async {
-  final TimeOfDay? newTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-    initialEntryMode: TimePickerEntryMode.input,
-    builder: (BuildContext context, Widget? child) {
-      return MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      );
-    },
-  );
-
-  if (newTime != null) {
-    final formattedTime = '${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}';
-    controller.text = formattedTime;
+  Future<void> selectedTime(
+      BuildContext context, TextEditingController controller) async {
+    final TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.input,
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
+    );
+    if (newTime != null) {
+      final formattedTime =
+          '${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}';
+      controller.text = formattedTime;
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +229,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Selección de Fecha
+              // Selección de fecha
               ElevatedButton(
                 onPressed: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -248,8 +248,9 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                     ? "Selecciona la fecha del reporte"
                     : "Fecha: ${fechaReporte!.toLocal().toString().split(' ')[0]}"),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Ubicación
               Text("Ubicación", style: Theme.of(context).textTheme.titleLarge),
               TextFormField(
@@ -307,7 +308,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                       controller: kmController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(labelText: "Km"),
+                      decoration: InputDecoration(labelText: "Kilómetro"),
                       validator: (value) =>
                           value!.isEmpty ? "Campo requerido" : null,
                     ),
@@ -316,18 +317,19 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               SizedBox(height: 20),
 
-              // SECCIÓN: Información del Lugar
-              Text("Información del Lugar",
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+              // SECCIÓN: Información del lugar
+              Text("Información del lugar",
                   style: Theme.of(context).textTheme.titleLarge),
               TextFormField(
                 controller: razonSocialController,
                 decoration:
-                    InputDecoration(labelText: "Razón Social/Giro Comercial"),
+                    InputDecoration(labelText: "Razón social/Giro comercial"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: descripcionLugarController,
-                decoration: InputDecoration(labelText: "Descripción del Lugar"),
+                decoration: InputDecoration(labelText: "Descripción del lugar"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               // Coordenadas
@@ -358,8 +360,9 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Datos del Reporte
-              Text("Datos del Reporte",
+              Text("Datos del reporte",
                   style: Theme.of(context).textTheme.titleLarge),
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Guardia"),
@@ -371,7 +374,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                     .toList(),
                 onChanged: (value) =>
                     setState(() => guardia = value as String?),
-                validator: (value) => value == null ? "Campo requirido" : null,
+                validator: (value) => value == null ? "Campo requerido" : null,
               ),
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Solicitado por"),
@@ -387,7 +390,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               TextFormField(
                 controller: reportanteController,
-                decoration: InputDecoration(labelText: "Nombre del Reportante"),
+                decoration: InputDecoration(labelText: "Nombre del reportante"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               DropdownButtonFormField(
@@ -402,7 +405,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                 validator: (value) => value == null ? "Campo requerido" : null,
               ),
               DropdownButtonFormField(
-                decoration: InputDecoration(labelText: "Tipo de Llamada"),
+                decoration: InputDecoration(labelText: "Tipo de llamada"),
                 items: tipoLlamadaOptions
                     .map((option) => DropdownMenuItem(
                           value: option,
@@ -415,8 +418,9 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               SizedBox(height: 20),
 
-              // SECCIÓN: Datos de Unidad y Horarios
-              Text("Datos de Unidad y Horarios",
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+              // SECCIÓN: Datos de la unidad y horarios
+              Text("Datos de unidad y horarios",
                   style: Theme.of(context).textTheme.titleLarge),
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Unidad que atiende"),
@@ -436,7 +440,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                       controller: kmSalidaController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(labelText: "Km de Salida"),
+                      decoration: InputDecoration(labelText: "Km de salida"),
                       validator: (value) =>
                           value!.isEmpty ? "Campo requerido" : null,
                     ),
@@ -447,7 +451,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                       controller: kmLlegadaController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(labelText: "Km de Llegada"),
+                      decoration: InputDecoration(labelText: "Km de llegada"),
                       validator: (value) =>
                           value!.isEmpty ? "Campo requerido" : null,
                     ),
@@ -458,46 +462,49 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                 controller: hrReporteController,
                 readOnly: true,
                 onTap: () => selectedTime(context, hrReporteController),
-                decoration: InputDecoration(labelText: "Hr Reporte"),
+                decoration: InputDecoration(labelText: "Hora de reporte"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrSalidaBaseController,
                 onTap: () => selectedTime(context, hrSalidaBaseController),
-                decoration: InputDecoration(labelText: "Hr Salida de Base"),
+                decoration: InputDecoration(labelText: "Hora de salida base"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrArriboController,
                 onTap: () => selectedTime(context, hrArriboController),
-                decoration: InputDecoration(labelText: "Hr Arribo a Escena"),
+                decoration: InputDecoration(labelText: "Hora de arribo escena"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrSalidaEscenaController,
                 onTap: () => selectedTime(context, hrSalidaEscenaController),
-                decoration: InputDecoration(labelText: "Hr Salida de Escena"),
+                decoration: InputDecoration(labelText: "Hora de salida escena"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrUnidadDisponibleController,
-                onTap: () => selectedTime(context, hrUnidadDisponibleController),
-                decoration: InputDecoration(labelText: "Hr Unidad Disponible"),
+                onTap: () =>
+                    selectedTime(context, hrUnidadDisponibleController),
+                decoration:
+                    InputDecoration(labelText: "Hora de unidad disponible"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               TextFormField(
                 controller: hrLlegadaBaseController,
                 onTap: () => selectedTime(context, hrLlegadaBaseController),
-                decoration: InputDecoration(labelText: "Hr Llegada a Base"),
+                decoration: InputDecoration(labelText: "Hora de llegada base"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Tipo de Servicio
-              Text("Tipo de Servicio",
+              Text("Tipo de servicio",
                   style: Theme.of(context).textTheme.titleLarge),
               DropdownButtonFormField(
-                decoration: InputDecoration(labelText: "Tipo de Servicio"),
+                decoration: InputDecoration(labelText: "Tipo de servicio"),
                 items: tipoServicioOptions
                     .map((option) => DropdownMenuItem(
                           value: option,
@@ -517,7 +524,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                 children: [
                   Expanded(
                     child: CheckboxListTile(
-                      title: Text("Falsa Alarma"),
+                      title: Text("Falsa alarma"),
                       value: falsaAlarma,
                       onChanged: (value) {
                         setState(() {
@@ -544,14 +551,15 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               TextFormField(
                 controller: descripcionServicioController,
                 decoration:
-                    InputDecoration(labelText: "Descripción del Servicio"),
+                    InputDecoration(labelText: "Descripción del servicio"),
                 maxLines: 3,
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
               ),
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Reporte de Actividades
-              Text("Reporte de Actividades",
+              Text("Reporte de actividades",
                   style: Theme.of(context).textTheme.titleLarge),
               TextFormField(
                 controller: folioAnoController,
@@ -562,8 +570,6 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               TextFormField(
                 controller: folioC4Controller,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
                     labelText: "Folio de C4 o NP (NP si no proporcionó Folio)"),
                 validator: (value) => value!.isEmpty ? "Campo requerido" : null,
@@ -575,20 +581,23 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Información Complementaria
               Text("Información Complementaria",
                   style: Theme.of(context).textTheme.titleLarge),
               TextFormField(
                 controller: accionesController,
-                decoration: InputDecoration(labelText: "Acciones en el Servicio, Material Involucrado/ Área afectada."),
+                decoration: InputDecoration(
+                    labelText:
+                        "Acciones en el servicio, material involucrado/área afectada"),
               ),
               TextFormField(
                 controller: nombreAfectadoController,
-                decoration: InputDecoration(labelText: "Nombre del Afectado"),
+                decoration: InputDecoration(labelText: "Nombre del afectado"),
               ),
               TextFormField(
                 controller: funcionController,
-                decoration: InputDecoration(labelText: "Función que Desempeña"),
+                decoration: InputDecoration(labelText: "Función que desempeña"),
               ),
               TextFormField(
                 controller: direccionController,
@@ -603,13 +612,14 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               TextFormField(
                 controller: materialController,
                 decoration: InputDecoration(
-                    labelText: "Material Involucrado y Daños Ocasionados"),
+                    labelText: "Material involucrado y daños ocasionados"),
                 maxLines: 2,
               ),
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Personal en Servicio
-              Text("Personal en Servicio",
+              Text("Personal en servicio",
                   style: Theme.of(context).textTheme.titleLarge),
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Operador"),
@@ -656,6 +666,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               ),
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Unidades de Bomberos J.R. de Apoyo
               Text("Unidades de Bomberos J.R. de Apoyo",
                   style: Theme.of(context).textTheme.titleLarge),
@@ -671,7 +682,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                   decoration: InputDecoration(labelText: "Encargado"),
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "No. de Elementos"),
+                  decoration: InputDecoration(labelText: "No. de elementos"),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
@@ -680,7 +691,7 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
               SizedBox(height: 20),
 
               // SECCIÓN: Unidades de Otras Instituciones
-              Text("Unidades de Otras Instituciones",
+              Text("Unidades de otras instituciones",
                   style: Theme.of(context).textTheme.titleLarge),
               for (int i = 1; i <= 3; i++) ...[
                 Text("Institución $i",
@@ -695,12 +706,13 @@ Future<void> selectedTime(BuildContext context, TextEditingController controller
                   decoration: InputDecoration(labelText: "Encargado"),
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "No. de Elementos"),
+                  decoration: InputDecoration(labelText: "No. de elementos"),
                 ),
                 SizedBox(height: 10),
               ],
               SizedBox(height: 20),
 
+//████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
               // SECCIÓN: Observaciones y Firma
               Text("Observaciones",
                   style: Theme.of(context).textTheme.titleLarge),
