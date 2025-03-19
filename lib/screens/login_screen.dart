@@ -140,14 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  MyButton(onTap: () {
+                  /*MyButton(onTap: () {
                     print("Botón de Google presionado");
                     AuthService().signInWithGoogle(context);
                   },
-                    )
+                    )*/
                   
                   // google sign in
-             /*     Row(
+                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // google button
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onTap: () => AuthService().signInWithGoogle(context),
                           imagePath: 'assets/google.png'),
                     ],
-                  ),*/
+                  ),
                 ],
               ),
             ),

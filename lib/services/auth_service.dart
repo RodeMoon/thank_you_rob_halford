@@ -174,6 +174,32 @@ class AuthService {
   }
 }
 
+Future<void> signout({required BuildContext context}) async {
+    progressBar(context, "Cerrando sesión");
+    try {
+      await FirebaseAuth.instance.signOut();
+      await _googleSignIn.signOut();
+
+      // Cerrar el Progress Bar
+      Navigator.of(context).pop();
+
+      // Opcional: Mostrar un mensaje indicando que la sesión se ha cerrado
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Has cerrado sesión exitosamente")),
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const LoginScreen()));
+    } catch (e) {
+      // Manejo de errores
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error al cerrar sesión: $e")),
+      );
+    }
+  }
 
   //  LOGIN CON EMAIL Y PASS
   Future<void> signin(
