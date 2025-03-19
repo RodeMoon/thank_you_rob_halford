@@ -21,12 +21,12 @@ class AuthService {
       if (emailRegExp.hasMatch(email)) {
         print('Correo válido');
         if (password.length >= 6) {
-          print("contrasena valida");
+          print("contraseña válida");
 
           await FirebaseAuth.instance
               .createUserWithEmailAndPassword(email: email, password: password);
 
-          progressBar(context, "Iniciando sesion");
+          progressBar(context, "Iniciando sesión");
 
           UserCredential userCredential = await FirebaseAuth.instance
               .signInWithEmailAndPassword(email: email, password: password);
@@ -47,7 +47,7 @@ class AuthService {
           Navigator.of(context, rootNavigator: true).pop();
 
           Fluttertoast.showToast(
-            msg: "Ingrese una contrasena de al menos 6 caracteres.",
+            msg: "Ingrese una contraseña de al menos 6 carácteres",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.SNACKBAR,
             backgroundColor: Colors.black54,
@@ -59,7 +59,7 @@ class AuthService {
         Navigator.of(context, rootNavigator: true).pop();
 
         Fluttertoast.showToast(
-          msg: "Ingrese un correo valido.",
+          msg: "Ingrese un correo valido",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.SNACKBAR,
           backgroundColor: Colors.black54,
@@ -72,7 +72,7 @@ class AuthService {
       if (e.code == 'weak-password') {
         message = 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
-        message = 'An account already exists with that email.';
+        message = 'An account already exists with that email';
       } else {
         message = 'Error: ${e.message}';
       }
@@ -142,7 +142,7 @@ class AuthService {
     final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
     
     if (gUser == null) {
-      print("Inicio de sesión cancelado por el usuario");
+      print("Inicio de sesión cancelado");
       return; // Si el usuario cancela, simplemente salimos de la función
     }
 
@@ -210,9 +210,9 @@ Future<void> signout({required BuildContext context}) async {
       if (emailRegExp.hasMatch(email)) {
         print('Correo válido');
         if (password.length >= 6) {
-          print("contrasena valida");
+          print("contraseña válida");
 
-          progressBar(context, "Iniciando sesion");
+          progressBar(context, "Iniciando sesión");
 
           UserCredential userCredential = await FirebaseAuth.instance
               .signInWithEmailAndPassword(email: email, password: password);
@@ -234,7 +234,7 @@ Future<void> signout({required BuildContext context}) async {
                   builder: (BuildContext context) => const DashboardScreen()));
         } else {
           Fluttertoast.showToast(
-            msg: "Ingrese una contrasena de al menos 6 caracteres.",
+            msg: "Ingrese una contraseña de al menos 6 carácteres.",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.SNACKBAR,
             backgroundColor: Colors.black54,
@@ -244,7 +244,7 @@ Future<void> signout({required BuildContext context}) async {
         }
       } else {
         Fluttertoast.showToast(
-          msg: "Ingrese un correo valido.",
+          msg: "Ingrese un correo válido.",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.SNACKBAR,
           backgroundColor: Colors.black54,
@@ -255,9 +255,9 @@ Future<void> signout({required BuildContext context}) async {
     } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'user-not-found') {
-        message = 'No se encontro un usuario asociado al correo.';
+        message = 'No se encontró un usuario asociado al correo.';
       } else if (e.code == 'wrong-password') {
-        message = 'Contrasena incorrecta.';
+        message = 'Contraseña incorrecta.';
       }
       Fluttertoast.showToast(
         msg: message,
