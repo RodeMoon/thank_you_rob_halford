@@ -3,6 +3,7 @@ import 'package:proyecto_integrador_bomberos/components/my_button.dart';
 import 'package:proyecto_integrador_bomberos/components/my_textfield.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:proyecto_integrador_bomberos/services/auth_service.dart';
+import '../components/square_tile.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,40 +17,40 @@ class _LoginScreenState extends State<LoginScreen> {
   final txtpWDController = TextEditingController();
 
   void signupUser() {
-      final email = txtUserController.text.trim();
-      final password = txtpWDController.text.trim();
+    final email = txtUserController.text.trim();
+    final password = txtpWDController.text.trim();
 
-      if (email.isEmpty || password.isEmpty) {
-        Fluttertoast.showToast(
-          msg: 'Por favor, complete todos los campos.',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black54,
-          textColor: Colors.white,
-          fontSize: 14.0,
-        );
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        Fluttertoast.showToast(
-          msg: 'Por favor, ingrese un correo válido.',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black54,
-          textColor: Colors.white,
-          fontSize: 14.0,
-        );
-        return;
-      }
-
-      AuthService().signin(email: email, password: password, context: context);
+    if (email.isEmpty || password.isEmpty) {
+      Fluttertoast.showToast(
+        msg: 'Por favor, complete todos los campos.',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+        fontSize: 14.0,
+      );
+      return;
     }
 
-    bool isValidEmail(String email) {
-      final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-      return emailRegex.hasMatch(email);
+    if (!isValidEmail(email)) {
+      Fluttertoast.showToast(
+        msg: 'Por favor, ingrese un correo válido.',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+        fontSize: 14.0,
+      );
+      return;
     }
+
+    AuthService().signin(email: email, password: password, context: context);
+  }
+
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    return emailRegex.hasMatch(email);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: Column(
                 children: [
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 30),
                   Image.asset(
                     "assets/fireman_hat.png",
                     width: 200,
@@ -112,22 +113,49 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 75),
                   MyButton(onTap: signupUser),
-                  const SizedBox(height: 50),
-                  Row(
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            'O continuar con',
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  MyButton(onTap: () {
+                    print("Botón de Google presionado");
+                    AuthService().signInWithGoogle(context);
+                  },
+                    )
+                  
+                  // google sign in
+             /*     Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('¿No está registrado?'),
-                      SizedBox(width: 4),
-                      GestureDetector.new(
-                        onTap: () => Navigator.pushNamed(context, "/register"),
-                        child: const Text(
-                          'Regístrese ahora',
-                          style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                      // google button
+                      SquareTile(
+                          onTap: () => AuthService().signInWithGoogle(context),
+                          imagePath: 'assets/google.png'),
                     ],
-                  ),
+                  ),*/
                 ],
               ),
             ),

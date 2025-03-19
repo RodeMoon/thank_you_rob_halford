@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:proyecto_integrador_bomberos/screens/dashboard_screen.dart';
 import 'package:proyecto_integrador_bomberos/screens/login_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  //static final GoogleSignIn _googleSignIn = GoogleSignIn(); // <----
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+  ); // <----
   RegExp emailRegExp =
       RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
 
@@ -133,6 +136,44 @@ class AuthService {
       print("Error al agregar el usuario a Firestore: $e");
     }
   }*/
+//  LOGIN CON GOOGLE
+  signInWithGoogle(BuildContext context) async {
+  try {
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    
+    if (gUser == null) {
+      print("Inicio de sesión cancelado por el usuario");
+      return; // Si el usuario cancela, simplemente salimos de la función
+    }
+
+    final GoogleSignInAuthentication gAuth = await gUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
+
+    progressBar(context, "Iniciando sesión...");
+
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    User user = userCredential.user!;
+
+    // Cerrar el Progress Bar
+    Navigator.of(context).pop();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const DashboardScreen()),
+    );
+  } catch (e) {
+    print("Error en Google Sign-In: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error al iniciar sesión con Google: $e")),
+    );
+  }
+}
+
 
   //  LOGIN CON EMAIL Y PASS
   Future<void> signin(
