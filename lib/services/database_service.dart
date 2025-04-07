@@ -8,7 +8,7 @@ class DatabaseService {
     final DatabaseReference userRef = _database.child("users/$userId");
 
     // Imprimir la URL a la que se está apuntando
-    print("🔗 Consultando URL: ${userRef.path}");
+    print("Consultando: ${userRef.path}");
 
     try {
       DataSnapshot snapshot = await userRef.get();

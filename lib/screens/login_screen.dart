@@ -139,13 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                  ),
-                  /*MyButton(onTap: () {
-                    print("Botón de Google presionado");
-                    AuthService().signInWithGoogle(context);
-                  },
-                    )*/
-                  
+                  ),                
                   // google sign in
                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,

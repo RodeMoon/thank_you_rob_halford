@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_integrador_bomberos/screens/form_screen.dart';
 import 'package:proyecto_integrador_bomberos/services/auth_service.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,6 +15,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int index = 0;
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  User? user;
+  String? name;
+  String? email;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize user and email here
+    user = FirebaseAuth.instance.currentUser;
+    name = user!.displayName;
+    email = user?.email;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,8 +116,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 borderRadius: BorderRadius.circular(100),
                 //child: selectedImage != null ? Image.file(selectedImage!) : const Image(image: AssetImage("assets/pfp.jpg"))),
                 child: const Image(image: AssetImage("assets/pfp.jpg"))),
-            accountName: const Text("sun&moon"),
-            accountEmail: const Text("zenwol@gmail.com"),
+            accountName: Text(name ?? "nouser"),
+            accountEmail: Text(email ?? "noemail"),
           ),
           ListTile(
             onTap: () {

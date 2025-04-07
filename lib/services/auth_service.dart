@@ -119,28 +119,6 @@ class AuthService {
     );
   }
 
-/*
-  Future<void> _addUserToFirestore(User user) async {
-    try {
-      // Referencia a la colección "usuarios" en Firestore
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('users');
-
-      // Crear un nuevo documento en Firestore con el ID del usuario de Firebase
-      await users.doc(user.uid).set({
-        'uid': user.uid,
-        'email': user.email,
-        'name': user.displayName ?? 'Sin nombre',
-        'photoUrl': user.photoURL ?? '',
-        'createdAt': Timestamp.now(),
-      });
-
-      print("Usuario agregado a Firestore.");
-    } catch (e) {
-      print("Error al agregar el usuario a Firestore: $e");
-    }
-  }*/
-
   String toMd5(String email) {
     print("email: ${md5.convert(utf8.encode(email)).toString()}");
     return md5.convert(utf8.encode(email)).toString();
@@ -231,8 +209,63 @@ class AuthService {
     }
   }
 
+  Future<void> signin({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      if (!emailRegExp.hasMatch(email)) {
+        Fluttertoast.showToast(msg: "Ingrese un correo válido.");
+        return;
+      }
+
+      if (password.length < 6) {
+        Fluttertoast.showToast(
+            msg: "Ingrese una contraseña de al menos 6 carácteres.");
+        return;
+      }
+
+      progressBar(context, "Iniciando sesión...");
+
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      User user = userCredential.user!;
+      String emailMd5 = toMd5(email);
+      bool exists =
+          await DatabaseService().checkIfUserExists(emailMd5.toString());
+      Navigator.of(context).pop(); // Cierra el progress bar
+
+      if (exists) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        );
+      } else {
+        Fluttertoast.showToast(msg: "El usuario no tiene acceso autorizado.");
+        await FirebaseAuth.instance.signOut();
+      }
+    } on FirebaseAuthException catch (e) {
+      Navigator.of(context)
+          .pop(); // Asegúrate de cerrar el progress bar también aquí
+      String message = '';
+      if (e.code == 'user-not-found') {
+        message = 'No se encontró un usuario asociado al correo.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Contraseña incorrecta.';
+      } else {
+        message = 'Ocurrió un error al iniciar sesión.';
+      }
+
+      Fluttertoast.showToast(msg: message);
+    } catch (e) {
+      Navigator.of(context).pop(); // En caso de error inesperado
+      Fluttertoast.showToast(msg: "Error inesperado: $e");
+    }
+  }
+
   //  LOGIN CON EMAIL Y PASS
-  Future<void> signin(
+  /*Future<void> signin(
       {required String email,
       required String password,
       required BuildContext context}) async {
@@ -248,16 +281,27 @@ class AuthService {
               .signInWithEmailAndPassword(email: email, password: password);
           User user = userCredential.user!;
 
-          await FirebaseAuth.instance
-              .signInWithEmailAndPassword(email: email, password: password);
+          bool exists = await DatabaseService().checkIfUserExists(user.uid);
+          Navigator.of(context).pop(); // Cierra el progress bar
+
+          if (exists) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            );
+          } else {
+            Fluttertoast.showToast(
+                msg: "El usuario no tiene acceso autorizado.");
+            await FirebaseAuth.instance.signOut();
+          }
 
           // Agregar usuario a Firestore
           // await _addUserToFirestore(user);
 
           // Cerrar el Progress Bar
-          Navigator.of(context).pop();
+          /*Navigator.of(context).pop();
           print("email: $email");
-          checkIfExist(email, context);
+          checkIfExist(email, context);*/
 /*
           await Future.delayed(const Duration(seconds: 1));
           Navigator.pushReplacement(
@@ -300,5 +344,5 @@ class AuthService {
         fontSize: 14.0,
       );
     }
-  }
+  }*/
 }

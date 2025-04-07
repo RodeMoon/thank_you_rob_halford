@@ -10,7 +10,7 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
   final _formKey = GlobalKey<FormState>();
   DateTime? fechaReporte;
 
-  // Controladores para campos de Ubicación e Información del Lugar
+  // Controladores ubicación e información del lugar
   final TextEditingController destinoController = TextEditingController();
   final TextEditingController coloniaController = TextEditingController();
   final TextEditingController comunidadController = TextEditingController();
@@ -23,10 +23,10 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
   final TextEditingController coordenadasNController = TextEditingController();
   final TextEditingController coordenadasWController = TextEditingController();
 
-  // Controladores para Datos del Reporte
+  // Controladores datos del reporte
   final TextEditingController reportanteController = TextEditingController();
 
-  // Controladores para Datos de Unidad y Horarios
+  // Controladores datos de unidad y horarios
   final TextEditingController unidadAtiendeController = TextEditingController();
   final TextEditingController kmSalidaController = TextEditingController();
   final TextEditingController kmLlegadaController = TextEditingController();
@@ -39,17 +39,17 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
       TextEditingController();
   final TextEditingController hrLlegadaBaseController = TextEditingController();
 
-  // Controladores para Tipo de Servicio y descripción
+  // Controladores tipo de servicio y descripción
   final TextEditingController especificaController = TextEditingController();
   final TextEditingController descripcionServicioController =
       TextEditingController();
 
-  // Controladores para Reporte de Actividades
+  // Controladores reporte de actividades
   final TextEditingController folioAnoController = TextEditingController();
   final TextEditingController folioC4Controller = TextEditingController();
   final TextEditingController elaboraController = TextEditingController();
 
-  // Controladores para Información Complementaria
+  // Controladores información complementaria
   final TextEditingController accionesController = TextEditingController();
   final TextEditingController nombreAfectadoController =
       TextEditingController();
@@ -58,10 +58,10 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
   final TextEditingController telefonoController = TextEditingController();
   final TextEditingController materialController = TextEditingController();
 
-  // Controladores para Observaciones y Firma
+  // Controladores observaciones
   final TextEditingController observacionesController = TextEditingController();
 
-  // Opciones para Dropdowns
+  // Opciones Dropdowns
   final List<String> guardiaOptions = [
     "Guardia \"A\"",
     "Guardia \"B\"",
