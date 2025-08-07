@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReportFormScreen extends StatefulWidget {
   @override
@@ -726,12 +727,76 @@ class _ReportFormScreenState extends State<ReportFormScreen> {
               // Botón Guardar Reporte
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      /*
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Reporte guardado con éxito")),
                       );
                       Navigator.pop(context);
+
+                       */
+
+
+                      // Construir mapa con los datos del formulario
+                      final Map<String, dynamic> reporteData = {
+                        'fecha_reporte': fechaReporte?.toIso8601String(),
+                        'destino': destinoController.text,
+                        'colonia': coloniaController.text,
+                        'comunidad': comunidadController.text,
+                        'ciudad': ciudad,
+                        'carretera': carreteraController.text,
+                        'km': kmController.text,
+                        'razon_social': razonSocialController.text,
+                        'descripcion_lugar': descripcionLugarController.text,
+                        'coordenadas_n': coordenadasNController.text,
+                        'coordenadas_w': coordenadasWController.text,
+                        'guardia': guardia,
+                        'solicitado_por': solicitadoPor,
+                        'reportante': reportanteController.text,
+                        'medio': medio,
+                        'tipo_llamada': tipoLlamada,
+                        'unidad': unidad,
+                        'km_salida': kmSalidaController.text,
+                        'km_llegada': kmLlegadaController.text,
+                        'hr_reporte': hrReporteController.text,
+                        'hr_salida_base': hrSalidaBaseController.text,
+                        'hr_arribo': hrArriboController.text,
+                        'hr_salida_escena': hrSalidaEscenaController.text,
+                        'hr_unidad_disponible': hrUnidadDisponibleController.text,
+                        'hr_llegada_base': hrLlegadaBaseController.text,
+                        'tipo_servicio': tipoServicio,
+                        'especifica': especificaController.text,
+                        'falsa_alarma': falsaAlarma,
+                        'cancelado': cancelado,
+                        'descripcion_servicio': descripcionServicioController.text,
+                        'folio_ano': folioAnoController.text,
+                        'folio_c4': folioC4Controller.text,
+                        'elabora': elaboraController.text,
+                        'acciones': accionesController.text,
+                        'nombre_afectado': nombreAfectadoController.text,
+                        'funcion': funcionController.text,
+                        'direccion': direccionController.text,
+                        'telefono': telefonoController.text,
+                        'material': materialController.text,
+                        'operador': operador,
+                        'jefe_servicio': jefeServicio,
+                        'observaciones': observacionesController.text,
+                        'created_at': FieldValue.serverTimestamp(),
+                      };
+
+                      try {
+                        await FirebaseFirestore.instance.collection('reportes').add(reporteData);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Reporte guardado con éxito")),
+                        );
+                        Navigator.pop(context);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error al guardar: $e")),
+                        );
+                      }
                     }
                   },
                   child: Text("Guardar reporte"),

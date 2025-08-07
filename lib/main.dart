@@ -11,8 +11,14 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+   await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyD4XWhH-eThiSdGHILsxaMrEbAlbt1HHVM",
+      appId: "1:414432687968:android:c514161e8e421117911005",
+      messagingSenderId: "414432687968",
+      projectId: "bomberos-1866b",
+      databaseURL: "https://bomberos-1866b-default-rtdb.firebaseio.com/",
+    ),
   );
   runApp(MyApp());
 }

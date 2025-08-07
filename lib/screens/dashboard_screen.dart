@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_integrador_bomberos/screens/form_screen.dart';
 import 'package:proyecto_integrador_bomberos/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'detailReport_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -26,8 +29,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     // Initialize user and email here
     user = FirebaseAuth.instance.currentUser;
-    name = user!.displayName;
-    email = user?.email;
+
+    if (user != null) {
+      name = user!.displayName ?? 'Usuario sin nombre';
+      email = user!.email ?? 'Correo no disponible';
+    } else {
+      name = 'Invitado';
+      email = 'Sin sesión';
+    }
   }
 
   @override
@@ -74,23 +83,96 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
       drawer: myDrawer(),
-      body: ListView.builder(
-        itemCount: 7,
-        itemBuilder: (BuildContext context, int index) {
-          return const Column(
-            children: [
-              ListTile(
-                leading: Icon(Icons.file_copy),
-                title: Text('Reporte'),
-                subtitle: Text('Reporte #'),
-                trailing: Icon(Icons.edit_note),
-              ),
-              Divider(
-                thickness: 0.5,
-                endIndent: 25,
-                indent: 25,
-              ),
-            ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('reportes')
+            //.orderBy('fecha', descending: true) // opcional: orden por fecha
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No hay reportes disponibles.'));
+          }
+
+          final reportes = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: reportes.length,
+            itemBuilder: (context, index) {
+              final data = reportes[index].data() as Map<String, dynamic>;
+
+              final fechaStr = data['fecha_reporte'];
+              final descripcion = data['descripcion_servicio'];
+
+              String fechaFormateada = 'Sin título';
+
+              if (fechaStr != null && fechaStr is String) {
+                try {
+                  final fecha = DateTime.parse(fechaStr);
+                  fechaFormateada = '${fecha.day}/${fecha.month}/${fecha.year}';
+                } catch (e) {
+                  fechaFormateada = fechaStr; // Por si acaso ya está formateado
+                }
+              }
+
+              return Column(
+                children: [
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailReportScreen(
+                            data: snapshot.data!.docs[index].data()
+                                as Map<String, dynamic>,
+                            docId: snapshot.data!.docs[index].id,
+                          ),
+                        ),
+                      );
+                    },
+                    leading: const Icon(Icons.file_copy),
+                    title: Text(fechaFormateada?.toString() ?? 'Sin título'),
+                    subtitle: Text(descripcion ?? 'Sin descripción'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        final docId = snapshot.data!.docs[index].id;
+
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('¿Eliminar reporte?'),
+                            content:
+                                const Text('Esta acción no se puede deshacer.'),
+                            actions: [
+                              TextButton(
+                                child: const Text('Cancelar'),
+                                onPressed: () => Navigator.pop(context, false),
+                              ),
+                              TextButton(
+                                child: const Text('Eliminar'),
+                                onPressed: () => Navigator.pop(context, true),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirm == true) {
+                          await FirebaseFirestore.instance
+                              .collection('reportes')
+                              .doc(docId)
+                              .delete();
+                        }
+                      },
+                    ),
+                  ),
+                  const Divider(thickness: 0.5, endIndent: 25, indent: 25),
+                ],
+              );
+            },
           );
         },
       ),
@@ -142,7 +224,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               //Navigator.pushNamed(context, "/settings_drawer");
             },
             title: const Text("Acerca de"),
-            subtitle: const Text("Versión 1.1"),
+            subtitle: const Text("Versión 1.0.1"),
             leading: const Icon(Icons.info),
             trailing: const Icon(Icons.arrow_forward_ios_sharp),
           ),
@@ -153,7 +235,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               )),
           ListTile(
             onTap: () {
-              AuthService().signout(context: context);
+              //AuthService().signout(context: context);
             },
             title: const Text("Cerrar sesión"),
             //subtitle: const Text("Tema / Fuente"),
