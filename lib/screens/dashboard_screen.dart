@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_integrador_bomberos/screens/form_screen.dart';
-import 'package:proyecto_integrador_bomberos/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -134,7 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       );
                     },
                     leading: const Icon(Icons.file_copy),
-                    title: Text(fechaFormateada?.toString() ?? 'Sin título'),
+                    title: Text(fechaFormateada.toString()),
                     subtitle: Text(descripcion ?? 'Sin descripción'),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),

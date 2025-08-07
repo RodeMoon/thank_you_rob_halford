@@ -32,9 +32,8 @@ class AuthService {
 
           progressBar(context, "Iniciando sesión");
 
-          UserCredential userCredential = await FirebaseAuth.instance
+          await FirebaseAuth.instance
               .signInWithEmailAndPassword(email: email, password: password);
-          User user = userCredential.user!;
 
           // Agregar usuario a Firestore
           // await _addUserToFirestore(user);
@@ -228,9 +227,8 @@ class AuthService {
 
       progressBar(context, "Iniciando sesión...");
 
-      UserCredential userCredential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      User user = userCredential.user!;
       String emailMd5 = toMd5(email);
       bool exists =
           await DatabaseService().checkIfUserExists(emailMd5.toString());
